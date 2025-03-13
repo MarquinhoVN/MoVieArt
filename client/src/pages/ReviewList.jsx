@@ -24,7 +24,7 @@ const ReviewItem = ({ review, onRemoved }) => {
 
     if (err) toast.error(err.message);
     if (response) {
-      toast.success("Remove review success");
+      toast.success("Review removida com sucesso");
       onRemoved(review.id);
     }
   };
@@ -135,7 +135,7 @@ const ReviewList = () => {
 
   return (
     <Box sx={{ ...uiConfigs.style.mainContent }}>
-      <Container header={`Your reviews (${count})`}>
+      <Container header={`Suas reviews (${count})`}>
         <Stack spacing={2}>
           {filteredReviews.map((item) => (
             <Box key={item.id}>
@@ -146,7 +146,7 @@ const ReviewList = () => {
             </Box>
           ))}
           {filteredReviews.length < reviews.length && (
-            <Button onClick={onLoadMore}>load more</Button>
+            <Button onClick={onLoadMore}>Carregar</Button>
           )}
         </Stack>
       </Container>

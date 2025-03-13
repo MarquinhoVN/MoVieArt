@@ -5,7 +5,7 @@ const Logo = () => {
    const navigate = useNavigate();
   return (
     <Typography fontWeight="700" fontSize="1.7rem" sx={{ cursor: "pointer" }} onClick ={() => navigate("/")}>
-      Movie<span style={{ color: theme.palette.primary.main }}>Verse</span>
+      MoVie<span style={{ color: theme.palette.primary.main }}>Art</span>
     </Typography>
   );
 };

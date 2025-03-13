@@ -25,7 +25,7 @@ const MediaList = () => {
   const dispatch = useDispatch();
 
   const mediaCategories = useMemo(() => ["popular", "top_rated"], []);
-  const category = ["popular", "top rated"];
+  const category = ["Populares", "Bem Avaliados"];
 
   useEffect(() => {
     dispatch(setAppState(mediaType));
@@ -118,7 +118,7 @@ const MediaList = () => {
           loading={mediaLoading}
           onClick={onLoadMore}
         >
-          load more
+         Carregar
         </LoadingButton>
       </Box>
     </>

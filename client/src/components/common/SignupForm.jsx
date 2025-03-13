@@ -40,7 +40,6 @@ const SignupForm = ({ switchAuthState }) => {
     onSubmit: async values => {
       setErrorMessage(undefined);
       setIsLoginRequest(true);
-      console.log("asdasdasdasd");
       const { response, err } = await userApi.signup(values);
       setIsLoginRequest(false);
 
@@ -48,7 +47,7 @@ const SignupForm = ({ switchAuthState }) => {
         signinForm.resetForm();
         dispatch(setUser(response));
         dispatch(setAuthModalOpen(false));
-        toast.success("Sign in success");
+        toast.success("Logado com successo");
       }
 
       if (err) setErrorMessage(err.message);
@@ -60,7 +59,7 @@ const SignupForm = ({ switchAuthState }) => {
       <Stack spacing={3}>
         <TextField
           type="text"
-          placeholder="username"
+          placeholder="Usuário"
           name="username"
           fullWidth
           value={signinForm.values.username}
@@ -71,7 +70,7 @@ const SignupForm = ({ switchAuthState }) => {
         />
         <TextField
           type="text"
-          placeholder="display name"
+          placeholder="Como você deseja ser chamado?"
           name="displayName"
           fullWidth
           value={signinForm.values.displayName}
@@ -82,7 +81,7 @@ const SignupForm = ({ switchAuthState }) => {
         />
         <TextField
           type="password"
-          placeholder="password"
+          placeholder="Senha"
           name="password"
           fullWidth
           value={signinForm.values.password}
@@ -93,7 +92,7 @@ const SignupForm = ({ switchAuthState }) => {
         />
         <TextField
           type="password"
-          placeholder="confirm password"
+          placeholder="Confirmar senha"
           name="confirmPassword"
           fullWidth
           value={signinForm.values.confirmPassword}
@@ -112,7 +111,7 @@ const SignupForm = ({ switchAuthState }) => {
         sx={{ marginTop: 4 }}
         loading={isLoginRequest}
       >
-        sign up
+        Registrar
       </LoadingButton>
 
       <Button
@@ -120,7 +119,7 @@ const SignupForm = ({ switchAuthState }) => {
         sx={{ marginTop: 1 }}
         onClick={() => switchAuthState()}
       >
-        sign in
+        Logar
       </Button>
 
       {errorMessage && (

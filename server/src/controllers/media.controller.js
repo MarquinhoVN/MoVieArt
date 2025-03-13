@@ -2,6 +2,7 @@ import responseHandler from "../handlers/response.handler.js";
 import tmdbApi from "../tmdb/tmdb.api.js";
 import userModel from "../models/user.model.js";
 import favoriteModel from "../models/favorite.model.js";
+import watchedModel from "../models/watched.model.js";
 import reviewModel from "../models/review.model.js";
 import tokenMiddlerware from "../middlewares/token.middleware.js";
 
@@ -47,6 +48,10 @@ const search = async (req, res) => {
   }
 };
 
+const getRec = async (req, res) => {
+  console.log(req)
+};
+
 const getDetail = async (req, res) => {
   try {
     const { mediaType, mediaId } = req.params;
@@ -75,6 +80,9 @@ const getDetail = async (req, res) => {
       if (user) {
         const isFavorite = await favoriteModel.findOne({ user: user.id, mediaId });
         media.isFavorite = isFavorite !== null;
+
+        const isWatched = await watchedModel.findOne({ user: user.id, mediaId});
+        media.isWatched = isWatched !== null;
       }
     }
 
@@ -86,5 +94,40 @@ const getDetail = async (req, res) => {
     responseHandler.error(res);
   }
 };
+const getRecommendations = async (req, res) => {
+  try {
 
-export default { getList, getGenres, search, getDetail };
+    const { mediaType } = req.params;
+    const { ids } = req.query; 
+
+    if (!ids) {
+      return responseHandler.error(res, "Nenhum ID fornecido.");
+    }
+
+    const mediaIds = ids.split(",").map(id => id.trim());
+
+    let allRecommendations = [];
+
+    for (const mediaId of mediaIds) {
+      const recommendations = await tmdbApi.mediaRecommend({ mediaType, mediaId });
+
+      if (recommendations && recommendations.results) {
+        allRecommendations = allRecommendations.concat(recommendations.results);
+      }
+    }
+
+    const shuffledRecommendations = allRecommendations
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 20); 
+
+    responseHandler.ok(res, shuffledRecommendations);
+  } catch (error) {
+    console.error("Erro em getRecommendations:", error);
+    responseHandler.error(res);
+  }
+};
+
+
+
+
+export default { getList, getGenres, search, getRec, getDetail, getRecommendations };

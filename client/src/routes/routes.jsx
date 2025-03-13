@@ -22,17 +22,17 @@ export const routesGen = {
 const routes = [
   {
     index: true,
-    element: <HomePage />,
+    element: (<ProtectedPage><HomePage /></ProtectedPage>),
     state: "home"
   },
   {
     path: "/person/:personId",
-    element: <PersonDetail />,
+    element: (<ProtectedPage> <PersonDetail /> </ProtectedPage>),
     state: "person.detail"
   },
   {
     path: "/search",
-    element: <MediaSearch />,
+    element: (<ProtectedPage> <MediaSearch /> </ProtectedPage>),
     state: "search"
   },
   {
@@ -68,7 +68,7 @@ const routes = [
   },
   {
     path: "/:mediaType/:mediaId",
-    element: <MediaDetail />
+    element: (<ProtectedPage><MediaDetail /></ProtectedPage>)
   }
 ];
 

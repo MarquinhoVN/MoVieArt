@@ -147,7 +147,7 @@ const MediaReview = ({ reviews, media, mediaType }) => {
             </Box> : null
           ))}
           {filteredReviews.length < listReviews.length && (
-            <Button onClick={onLoadMore}>load more</Button>
+            <Button onClick={onLoadMore}>Carregar</Button>
           )}
         </Stack>
         {user && (
@@ -164,7 +164,7 @@ const MediaReview = ({ reviews, media, mediaType }) => {
                   onChange={(e) => setContent(e.target.value)}
                   multiline
                   rows={4}
-                  placeholder="Write your review"
+                  placeholder="Escreva sua review"
                   variant="outlined"
                 />
                 <LoadingButton

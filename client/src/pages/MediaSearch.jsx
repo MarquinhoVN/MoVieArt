@@ -88,7 +88,7 @@ const MediaSearch = () => {
           </Stack>
           <TextField
             color="success"
-            placeholder="Search MovieVerse"
+            placeholder="Buscar MoVieArt"
             sx={{ width: "100%" }}
             autoFocus
             onChange={onQueryChange}
@@ -101,7 +101,7 @@ const MediaSearch = () => {
               loading={onSearch}
               onClick={() => setPage(page + 1)}
             >
-              load more
+              Carregar
             </LoadingButton>
           )}
         </Stack>

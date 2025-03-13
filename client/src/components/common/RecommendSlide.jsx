@@ -8,8 +8,7 @@ const RecommendSlide = ({ medias, mediaType }) => {
       {medias.map((media, index) => (
         <SwiperSlide key={index}>
           <MediaItem media={media} mediaType={mediaType} />
-        </SwiperSlide>
-      ))}
+        </SwiperSlide>      ))}
     </AutoSwiper>
   );
 };

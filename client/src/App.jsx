@@ -1,5 +1,4 @@
 import { ThemeProvider } from "@mui/material/styles";
-import { useSelector } from "react-redux";
 import themeConfigs from "./configs/theme.configs";
 import { ToastContainer } from "react-toastify";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,7 +13,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 const App = () => {
-  const { themeMode } = useSelector((state) => state.themeMode);
+  const themeMode = "dark";
 
   return (
     <ThemeProvider theme={themeConfigs.custom({ mode: themeMode })}>

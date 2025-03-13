@@ -17,10 +17,11 @@ import uiConfigs from "../configs/ui.configs";
 import tmdbConfigs from "../api/configs/tmdb.configs";
 import mediaApi from "../api/modules/media.api";
 import favoriteApi from "../api/modules/favorite.api";
+import watchedApi from "../api/modules/watched.api"; 
 
 import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
 import { setAuthModalOpen } from "../redux/features/authModalSlice";
-import { addFavorite, removeFavorite } from "../redux/features/userSlice";
+import { addFavorite, removeFavorite, addWatched, removeWatched } from "../redux/features/userSlice";
 
 import CastSlide from "../components/common/CastSlide";
 import MediaVideosSlide from "../components/common/MediaVideosSlide";
@@ -32,16 +33,15 @@ import MediaReview from "../components/common/MediaReview";
 
 const MediaDetail = () => {
   const { mediaType, mediaId } = useParams();
-
-  const { user, listFavorites } = useSelector((state) => state.user);
+  const { user, listFavorites, listWatched } = useSelector((state) => state.user);
 
   const [media, setMedia] = useState();
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isWatched, setIsWatched] = useState(false);  // Estado para verificar se o item está na lista "watched"
   const [onRequest, setOnRequest] = useState(false);
   const [genres, setGenres] = useState([]);
 
   const dispatch = useDispatch();
-
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -50,11 +50,11 @@ const MediaDetail = () => {
       dispatch(setGlobalLoading(true));
       const { response, err } = await mediaApi.getDetail({ mediaType, mediaId });
       dispatch(setGlobalLoading(false));
-
       if (response) {
         setMedia(response);
         setIsFavorite(response.isFavorite);
         setGenres(response.genres.splice(0, 2));
+        setIsWatched(response.isWatched);
       }
 
       if (err) toast.error(err.message);
@@ -63,6 +63,7 @@ const MediaDetail = () => {
     getMedia();
   }, [mediaType, mediaId, dispatch]);
 
+    
   const onFavoriteClick = async () => {
     if (!user) return dispatch(setAuthModalOpen(true));
 
@@ -101,6 +102,7 @@ const MediaDetail = () => {
 
     const favorite = listFavorites.find(e => e.mediaId.toString() === media.id.toString());
 
+
     const { response, err } = await favoriteApi.remove({ favoriteId: favorite.id });
 
     setOnRequest(false);
@@ -112,6 +114,67 @@ const MediaDetail = () => {
       toast.success("Remove favorite success");
     }
   };
+
+   const onWatchNowClick = async () => {
+    if (!user) return dispatch(setAuthModalOpen(true));
+
+    if (onRequest) return;
+
+
+    if (isWatched) {
+      onRemoveWatched();
+      return;
+    }
+
+    setOnRequest(true);
+
+    const body = {
+      mediaId: media.id,
+      mediaTitle: media.title || media.name,
+      mediaType,
+      mediaPoster: media.poster_path,
+      mediaRate: media.vote_average
+    };
+
+    const { response, err } = await watchedApi.add(body);
+
+    setOnRequest(false);
+
+    if (err) {
+      toast.error(err.message);
+      return;
+    }
+
+    if (response) {
+      dispatch(addWatched(response));
+      setIsWatched(true);
+      toast.success("Added to watched list");
+    }
+  };
+
+  const onRemoveWatched = async () => {
+    if (onRequest) return;
+    setOnRequest(true);
+
+    const watchedItem = listWatched.find(e => e.mediaId.toString() === media.id.toString());
+    const { response, err } = await watchedApi.remove({ watchedId: watchedItem.id });
+
+    setOnRequest(false);
+
+    if (err) {
+      toast.error(err.message);
+      return;
+    }
+
+    if (response) {
+      dispatch(removeWatched(watchedItem));
+      setIsWatched(false);
+      toast.success("Removed from watched list");
+    }
+  };
+
+ 
+  
 
   return (
     media ? (
@@ -185,7 +248,6 @@ const MediaDetail = () => {
                     {media.overview}
                   </Typography>
                   {/* overview */}
-
                   {/* buttons */}
                   <Stack direction="row" spacing={1}>
                     <LoadingButton
@@ -205,9 +267,9 @@ const MediaDetail = () => {
                       sx={{ width: "max-content" }}
                       size="large"
                       startIcon={<PlayArrowIcon />}
-                      onClick={() => videoRef.current.scrollIntoView()}
+                      onClick={onWatchNowClick}  // Chamada da função onWatchNowClick
                     >
-                      watch now
+                      {isWatched ? "Assistido" : "Assistir"}
                     </Button>
                   </Stack>
                   {/* buttons */}
@@ -242,7 +304,7 @@ const MediaDetail = () => {
 
           {/* media posters */}
           {media.images.posters.length > 0 && (
-            <Container header="posters">
+            <Container header=" ">
               <PosterSlide posters={media.images.posters} />
             </Container>
           )}
@@ -253,7 +315,7 @@ const MediaDetail = () => {
           {/* media reviews */}
 
           {/* media recommendation */}
-          <Container header="you may also like">
+          <Container header="Você pode gostar de:">
             {media.recommend.length > 0 && (
               <RecommendSlide medias={media.recommend} mediaType={mediaType} />
             )}
