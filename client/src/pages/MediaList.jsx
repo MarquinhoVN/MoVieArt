@@ -89,7 +89,7 @@ const MediaList = () => {
           sx={{ marginBottom: 4 }}
         >
           <Typography fontWeight="700" variant="h5">
-            {mediaType === tmdbConfigs.mediaType.movie ? "Movies" : "TV Series"}
+            {mediaType === tmdbConfigs.mediaType.movie ? "Filmes" : "Series"}
           </Typography>
           <Stack direction="row" spacing={2}>
             {category.map((cate, index) => (
